@@ -1,7 +1,7 @@
 
 function HomePage() {
   return (
-    <div className="bg-content flex-grow min-w-full ">
+    <div className="context-page ">
       <p>This is the home page</p>
     </div>
   );

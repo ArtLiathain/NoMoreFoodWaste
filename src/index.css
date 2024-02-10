@@ -5,3 +5,11 @@
 .input-field {
     @apply bg-white border border-gray-300 rounded-lg p-3;  
 }
+
+.context-page {
+    @apply bg-content min-w-full flex-grow p-4;
+}
+
+.active-link {
+    @apply text-blue bg-black;
+}
