@@ -4,10 +4,10 @@ import logo from "../../Images/logo.png";
 function Navbar() {
   return (
     <div className="flex justify-between min-w-full bg-highlight p-2 text-content">
-      <img src={logo} alt="logo" className="w-10 h-10" />
+      <img src={logo} alt="logo" className="w- h-auto" />
 
       <nav className="no-underline md:flex justify-center gap-5 p-1  items-center text-2xl">
-        <NavLink to="/home" className={({ isActive }) => isActive ? 'text-white' : ''}>Home</NavLink>
+        <NavLink to="/home" className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink>
         <NavLink to="/food" className={({ isActive }) => isActive ? 'active-link' : ''}>Food</NavLink>
         <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'active-link' : ''}>Dashboard</NavLink>
         <NavLink to="/ls" className={({ isActive }) => isActive ? 'active-link' : ''}>List</NavLink>
