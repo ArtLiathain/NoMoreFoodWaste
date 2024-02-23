@@ -1,3 +1,5 @@
+import React from "react";
+
 function HomePage() {
   return (
     <div className="context-page bg-hero-pattern bg-cover">

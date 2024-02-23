@@ -1,3 +1,5 @@
+import React from "react";
+
 const AboutPage = () => {
   return (
     <div className="context-page p-2">
