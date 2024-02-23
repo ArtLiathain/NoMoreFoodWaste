@@ -11,5 +11,5 @@
 }
 
 .active-link {
-    @apply text-light bg-dark rounded-md p-2;
+    @apply text-light;
 }

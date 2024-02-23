@@ -9,6 +9,9 @@ export default {
         content: "#ADBC9F",
         highlight: "#436850",
       },
+      backgroundImage: {
+        'hero-pattern': "url('./src/Images/food.png')",
+      }
     },
   },
   plugins: [],
