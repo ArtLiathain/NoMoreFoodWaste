@@ -9,7 +9,8 @@ edition = "2021"
 color-eyre = "0.6.2"
 poem = "2.0.0"
 actix-web = "4"
-poem-openapi = "4.0.0"
+poem-openapi = {version = "4.0.0", features = ["swagger-ui"] }
 tokio = { version = "1.36.0", features = ["full"] }
 serde = "1.0.197"
-serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+reqwest = {version = "0.11", features = ["blocking", "json"]}
+serde_json = { version = "1.0.73", default-features = false, features = ["alloc"] }
