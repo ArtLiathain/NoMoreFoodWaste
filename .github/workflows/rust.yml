@@ -3,8 +3,11 @@ name: Rust
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - folder1/**
   pull_request:
     branches: [ "main" ]
+    
 
 env:
   CARGO_TERM_COLOR: always
