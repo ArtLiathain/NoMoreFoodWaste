@@ -68,7 +68,7 @@ COPY --from=build /usr/src/app/dist/ ./dist/
 
 
 # Expose the port that the application listens on.
-EXPOSE 3000
+EXPOSE 8080
 
 # Run the application.
-CMD [ "serve", "-s", "dist" ]
+CMD [ "serve", "-s", "-l", "8080", "dist" ]
