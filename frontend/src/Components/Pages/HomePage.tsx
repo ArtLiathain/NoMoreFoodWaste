@@ -1,11 +1,15 @@
+import NiceLookingBox from "../NiceLookingbox";
 
 function HomePage() {
   return (
-    <div className="context-page bg-hero-pattern bg-cover">
-      <div className=" text-white font-bold text-9xl flex ">
-        <h1 className="justify-self-start">Home</h1>
+    <>
+      <div className="context-page">
+        <div className=" text-white font-bold text-9xl flex flex-col flex-end">
+          <h1 className="justify-self-start">Home</h1>
+        </div>
       </div>
-    </div>
+      <NiceLookingBox>Hello</NiceLookingBox>
+    </>
   );
 }
 

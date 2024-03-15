@@ -6,12 +6,12 @@ export default {
       colors: {
         dark: "#12372A",
         light: "#FBFADA",
-        content: "#ADBC9F",
-        highlight: "#436850",
+        content: "#436850",
+        highlight: "#ADBC9F",
       },
       backgroundImage: {
-        'hero-pattern': "url('./src/Images/food.png')",
-      }
+        "tableOfFood": "url('./src/Images/foodtable.webp')",
+      },
     },
   },
   plugins: [],

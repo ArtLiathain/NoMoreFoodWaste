@@ -7,7 +7,7 @@
 }
 
 .context-page {
-    @apply bg-content min-w-full flex-grow p-4;
+    @apply bg-content min-w-full flex-grow flex-shrink-0 p-4;
 }
 
 .active-link {

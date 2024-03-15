@@ -10,19 +10,21 @@ import { FoodPage } from "./Components/Pages/FoodPage";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen justify-between items-center w-screen text-center font-mono">
-      <BrowserRouter>
-        <Navbar></Navbar>
-        <Routes>
-          <Route path="/" element={<AboutPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/about" element={<CustomerPage />} />
-          <Route path="/food" element={<FoodPage />} />
-          <Route path="*" element={<AboutPage />} />
-        </Routes>
-      </BrowserRouter>
-      <Footer></Footer>
+    <div className="flex flex-col min-h-screen  w-screen ">
+      <div className="overflow-y-auto flex-1 w-screen flex flex-col items-center text-center font-mono ">
+        <BrowserRouter>
+          <Navbar></Navbar>
+          <Routes>
+            <Route path="/" element={<AboutPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/about" element={<CustomerPage />} />
+            <Route path="/food" element={<FoodPage />} />
+            <Route path="*" element={<AboutPage />} />
+          </Routes>
+        </BrowserRouter>
+        <Footer></Footer>
+      </div>
     </div>
   );
 }
