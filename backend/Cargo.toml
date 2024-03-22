@@ -1,5 +1,5 @@
 [package]
-name = "food-waste_api"
+name = "food_waste_api"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,13 +7,15 @@ edition = "2021"
 
 [dependencies]
 color-eyre = "0.6.2"
-poem = "2.0.0"
+poem = {version ="2.0.0", feature = ["cors"]}
 actix-web = "4"
 poem-openapi = {version = "4.0.0", features = ["swagger-ui"] }
 tokio = { version = "1.36.0", features = ["full"] }
 serde = "1.0.197"
 reqwest = {version = "0.11", features = ["blocking", "json"]}
 serde_json = { version = "1.0.73", default-features = false, features = ["alloc"] }
-sqlx = { version = "0.7", features = [ "runtime-tokio-rustls", "postgres"] }
+sqlx = { version = "0.7", features = [ "runtime-tokio-rustls", "postgres", "time"] }
 bcrypt = "0.15.0"
 regex = "1.10.3"
+dotenv = "0.15.0"
+chrono = "0.4.35"

@@ -8,10 +8,14 @@ export default {
         light: "#FBFADA",
         content: "#436850",
         highlight: "#ADBC9F",
+        'light-green': '#9CDBB3',
+        'dark-green': '#00853D',
       },
-      backgroundImage: {
-        "tableOfFood": "url('./src/Images/foodtable.webp')",
-      },
+      backgroundImage: (theme) => ({
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-linear": "linear-gradient(180deg, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(var(--tw-gradient-stops))",
+      }),
     },
   },
   plugins: [],

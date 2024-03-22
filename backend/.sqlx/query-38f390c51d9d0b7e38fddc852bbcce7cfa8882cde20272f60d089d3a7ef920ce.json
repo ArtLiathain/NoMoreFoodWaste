@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT pc.product_name, up.dateOfEntry, up.barcode\n            FROM userProducts up\n            JOIN products pc ON up.barcode = pc.barcode\n            WHERE up.email = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "product_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "dateofentry",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "barcode",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "38f390c51d9d0b7e38fddc852bbcce7cfa8882cde20272f60d089d3a7ef920ce"
+}

@@ -7,16 +7,16 @@
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
 ARG RUST_VERSION=1.76.0
-ARG APP_NAME=FoodWasteApi
+ARG APP_NAME=food_waste_api
 
 ################################################################################
 # xx is a helper for cross-compilation.
 # See https://github.com/tonistiigi/xx/ for more information.
-FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.3.0 AS xx
+FROM tonistiigi/xx:1.3.0 AS xx
 
 ################################################################################
 # Create a stage for building the application.
-FROM --platform=$BUILDPLATFORM rust:${RUST_VERSION}-alpine AS build
+FROM rust:${RUST_VERSION}-alpine AS build
 ARG APP_NAME
 WORKDIR /app
 
@@ -41,7 +41,6 @@ ENV OPENSSL_INCLUDE_DIR=/usr/include
 # This is the architecture you’re building for, which is passed in by the builder.
 # Placing it here allows the previous steps to be cached across architectures.
 ARG TARGETPLATFORM
-
 # Install cross compilation build dependencies.
 RUN xx-apk add --no-cache musl-dev gcc
 
@@ -56,10 +55,14 @@ RUN xx-apk add --no-cache musl-dev gcc
 RUN --mount=type=bind,source=src,target=src \
     --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=.sqlx,target=.sqlx \
     --mount=type=cache,target=/app/target/,id=rust-cache-${APP_NAME}-${TARGETPLATFORM} \
     --mount=type=cache,target=/usr/local/cargo/git/db \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
     xx-cargo build --locked --release --target-dir ./target && \
+    echo "Target triple: $(xx-cargo --print-target-triple)" && \
+    echo "APP_NAME: $APP_NAME" && \
+    ls -l ./target/$(xx-cargo --print-target-triple)/release/ && \
     cp ./target/$(xx-cargo --print-target-triple)/release/$APP_NAME /bin/server && \
     xx-verify /bin/server
 
@@ -92,7 +95,7 @@ USER appuser
 COPY --from=build /bin/server /bin/
 
 # Expose the port that the application listens on.
-EXPOSE 80
+EXPOSE 3000
 
 # What the container should run when it is started.
 CMD ["/bin/server"]

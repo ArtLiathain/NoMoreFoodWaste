@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM userProducts\n        WHERE ctid = (\n            SELECT ctid\n            FROM userProducts\n            WHERE barcode = $1 AND email = $2\n            ORDER BY dateOfEntry ASC\n            LIMIT 1\n        )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fdd30c9182b9e891ae1362046407ce80917b4a6dbd67661e723ad0a12401c6a6"
+}

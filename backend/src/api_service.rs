@@ -1,17 +1,19 @@
 pub mod api_service {
+    use crate::database::product_database;
+    use crate::{
+        database::{self, product_database::*},
+        Errors,
+    };
     use poem_openapi::{
+        param::Query,
         payload::{Json, PlainText},
         ApiResponse, Object, OpenApi,
     };
     use regex::Regex;
     use reqwest::header;
     use serde::{Deserialize, Serialize};
+    use sqlx::types::time::Date;
     use std::time::Duration;
-
-    use crate::{
-        database::{self, product_database},
-        Errors,
-    };
 
     #[derive(Object, Deserialize, Serialize)]
     pub struct ProductUserInfo {
@@ -38,17 +40,27 @@ pub mod api_service {
         pub password: String,
     }
 
+    #[derive(Object, Deserialize, Serialize, Debug)]
+    pub struct UserProducts {
+        pub product_name: String,
+        pub purchase_date: String,
+        pub barcode: i64,
+    }
+
     #[derive(ApiResponse)]
-    pub enum HelloApiResponse {
+    pub enum StandardResponse {
         #[oai(status = 200)]
         Ok(Json<MBRSuccessMessage>),
         #[oai(status = 400)]
         BadRequest(PlainText<String>),
     }
 
-    #[derive(Object, Serialize)]
-    pub struct MyResponse {
-        message: String,
+    #[derive(ApiResponse)]
+    pub enum GetResponse {
+        #[oai(status = 200)]
+        Ok(Json<Vec<UserProducts>>),
+        #[oai(status = 400)]
+        BadRequest(PlainText<String>),
     }
 
     pub fn is_valid_email(email: &str) -> bool {
@@ -104,7 +116,7 @@ pub mod api_service {
         }
 
         #[oai(path = "/adduserfood", method = "post")]
-        pub async fn adduserfood(&self, userinfo: Json<ProductUserInfo>) -> HelloApiResponse {
+        pub async fn adduserfood(&self, userinfo: Json<ProductUserInfo>) -> StandardResponse {
             match database::product_database::add_to_cache_database(&self.pool, userinfo.barcode)
                 .await
             {
@@ -116,18 +128,23 @@ pub mod api_service {
                     )
                     .await;
                     match data_insert {
-                        Ok(_) => HelloApiResponse::Ok(Json(MBRSuccessMessage {
+                        Ok(_) => StandardResponse::Ok(Json(MBRSuccessMessage {
                             response: "Successfully added to user database".to_string(),
                         })),
-                        Err(e) => HelloApiResponse::BadRequest(PlainText(e.to_string())),
+                        Err(e) => StandardResponse::BadRequest(PlainText(e.to_string())),
                     }
                 }
-                Err(e) => HelloApiResponse::BadRequest(PlainText(e.to_string())),
+                Err(e) => StandardResponse::BadRequest(PlainText(e.to_string())),
             }
         }
-
+        #[oai(path = "/", method = "get")]
+        pub async fn health(&self) -> StandardResponse {
+            return StandardResponse::Ok(Json(MBRSuccessMessage {
+                response: "healthy".to_string(),
+            }));
+        }
         #[oai(path = "/removeuserfood", method = "post")]
-        pub async fn removeuserfood(&self, userinfo: Json<ProductUserInfo>) -> HelloApiResponse {
+        pub async fn removeuserfood(&self, userinfo: Json<ProductUserInfo>) -> StandardResponse {
             match database::product_database::remove_form_user_products(
                 &userinfo.user_email,
                 &userinfo.barcode,
@@ -135,19 +152,20 @@ pub mod api_service {
             )
             .await
             {
-                Ok(_) => {
-                    HelloApiResponse::Ok(Json(MBRSuccessMessage {
-                        response: format!("Successfully removed product {} from user database", userinfo.barcode),
-                    }))
-                }
-                Err(e) => HelloApiResponse::BadRequest(PlainText(e.to_string())),
+                Ok(_) => StandardResponse::Ok(Json(MBRSuccessMessage {
+                    response: format!(
+                        "Successfully removed product {} from user database",
+                        userinfo.barcode
+                    ),
+                })),
+                Err(e) => StandardResponse::BadRequest(PlainText(e.to_string())),
             }
         }
 
         #[oai(path = "/adduseraccount", method = "post")]
-        pub async fn add_user_details(&self, details: Json<UserInfo>) -> HelloApiResponse {
+        pub async fn add_user_details(&self, details: Json<UserInfo>) -> StandardResponse {
             if !is_valid_email(&details.email) {
-                return HelloApiResponse::BadRequest(PlainText("Not a valid email".to_string()));
+                return StandardResponse::BadRequest(PlainText("Not a valid email".to_string()));
             }
             match database::product_database::add_user(
                 &details.email,
@@ -156,10 +174,31 @@ pub mod api_service {
             )
             .await
             {
-                Ok(_) => HelloApiResponse::Ok(Json(MBRSuccessMessage {
+                Ok(_) => StandardResponse::Ok(Json(MBRSuccessMessage {
                     response: "Successfully added a user to database".to_string(),
                 })),
-                Err(e) => HelloApiResponse::BadRequest(PlainText(e.to_string())),
+                Err(e) => StandardResponse::BadRequest(PlainText(e.to_string())),
+            }
+        }
+
+        #[oai(path = "/getuserfood", method = "get")]
+        pub async fn get_user_products(&self, email: Query<String>) -> GetResponse {
+            let data = get_food_of_user(&email, &self.pool).await;
+            match data {
+                Ok(data) => return GetResponse::Ok(Json(data)),
+                Err(e) => GetResponse::BadRequest(PlainText(e.to_string())),
+            }
+        }
+        #[oai(path = "/getuserfoodfilter", method = "get")]
+        pub async fn get_user_products_filter(
+            &self,
+            email: Query<String>,
+            filter: Query<String>,
+        ) -> GetResponse {
+            let data = get_food_of_user_filter(&email, &filter, &self.pool).await;
+            match data {
+                Ok(data) => return GetResponse::Ok(Json(data)),
+                Err(e) => GetResponse::BadRequest(PlainText(e.to_string())),
             }
         }
     }

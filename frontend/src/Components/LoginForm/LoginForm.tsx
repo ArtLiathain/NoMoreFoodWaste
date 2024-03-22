@@ -1,10 +1,22 @@
 import React from "react";
 import { useState } from "react";
+import {
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  Center,
+  Box,
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-export const LoginForm = () => {
+export const LoginForm = ({onUserLogin}: {onUserLogin: (email: string) => void}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailFilled, setEmailFilled] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -16,39 +28,58 @@ export const LoginForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
-  };
-
-  const clearLogin = () => {
-    if (email.length == 0){
-        setEmailFilled(false);
+    setIsSubmitted(true);
+    if (email === "" || password === "") {
+      return;
     }
-    setEmail("");
-    setPassword("");
+    onUserLogin(email);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col items-center justify-center min-h-full gap-1"
-    >
-      <input
-        className={`input-field ${emailFilled ? '' : 'border-red-700'}`}
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={handleEmailChange}
-      />
-      <input
-        className="input-field"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={handlePasswordChange}
-      />
-      <button type="submit" className="bg-highlight rounded p-4 pt-2 pb-2" onClick={clearLogin}>
-        Submit
-      </button>
-    </form>
+    <Center>
+      <Box p={4} bg="brand.100" w="300px">
+        <form onSubmit={handleSubmit}>
+          <VStack spacing={4}>
+            <FormControl id="email">
+              <FormLabel fontWeight="bold" color="brand.highlight">
+                Email
+              </FormLabel>
+              <Input
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={handleEmailChange}
+                isInvalid={isSubmitted && email === ""}
+                className="text-white"
+              />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel fontWeight="bold" color="brand.highlight">
+                Password
+              </FormLabel>
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                isInvalid={isSubmitted && password === ""}
+                className="text-white"
+              />
+            </FormControl>
+            <ButtonGroup>
+              <Button
+                type="submit"
+                size={"md"}
+                color="brand.dark"
+                bg="brand.highlight"
+              >
+                Submit
+              </Button>
+              <Button onClick={() => navigate("/")}>Cancel</Button>
+            </ButtonGroup>
+          </VStack>
+        </form>
+      </Box>
+    </Center>
   );
 };
